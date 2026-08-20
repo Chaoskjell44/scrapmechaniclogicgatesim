@@ -2,7 +2,7 @@
   "name": "logicgate",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://stevebenz.github.io/ScrapMechanicLogicGateSimulator/",
+  "homepage": "https://chaoskjell44.github.io/scrapmechaniclogicgatesim/",
   "dependencies": {
     "@ts-stack/markdown": "^1.4.0",
     "buffer": "^6.0.3",
