@@ -23,6 +23,7 @@ interface IInteractableProps {
     onLinkStart?: (eventArgs: IEventArgsInteractable) => void;
     onMouseUp?: (eventArgs: IEventArgsInteractable) => void;
     onMoveCompleted?: (eventArgs: IEventArgsInteractable) => void;
+    onPaint?: (model: Model.Interactable) => void;
     key: string;
     isSelected: boolean;
 }
@@ -167,7 +168,13 @@ export function Interactable(props: IInteractableProps): JSX.Element {
         document.getElementById('menuItemToXnor')!.onclick = () => handleChangeType('xnor');
         document.getElementById('menuItemToggle')!.onclick = () => handleToggleValue();
         document.getElementById('menuItemDescribe')!.onclick = () => handleEditDescription();
-        document.getElementById('menuItemPaint')!.onclick = () => props.model.paint();
+        document.getElementById('menuItemPaint')!.onclick = () => {
+            if (props.onPaint) {
+                props.onPaint(props.model);
+            } else {
+                props.model.paint();
+            }
+        };
 
         document.getElementById('menuItemAddOneTick')!.onclick = () => handleTicksChange(1);
         document.getElementById('menuItemMinusOneTick')!.onclick = () => handleTicksChange(-1);
@@ -214,8 +221,9 @@ export function Interactable(props: IInteractableProps): JSX.Element {
     }
 
     const groupContent: Array<JSX.Element> = [];
+    const borderColor = props.isSelected ? 'green' : (props.model.paintColor || '#ffb341');
     groupContent.push(
-        <Rect key='surround' height={64} width={64} strokeWidth={5} stroke={props.isSelected ? 'green' : '#ffb341'} fill={isOn ? '#26D0F9' : '#384a50'} />
+        <Rect key='surround' height={64} width={64} strokeWidth={5} stroke={borderColor} fill={isOn ? '#26D0F9' : '#384a50'} />
     )
     if (props.model instanceof Model.InteractableWithSingleBitSavedState) {
         groupContent.push(<SavedStateIndicator key='savedStateIndicator' model={props.model}/>)
@@ -367,6 +375,7 @@ export interface ILinkArrowProps {
     color?: string;
     outlineColor?: string;
     offset?: [number, number];
+    isHighlighted?: boolean;
 }
 
 /** @summary Given two points, both of which are at the center of 64x64 squares, it returns a pair of endpoints
@@ -432,6 +441,18 @@ export function LinkArrow(props: ILinkArrowProps): JSX.Element {
 
     return (
         <Group>
+            {props.isHighlighted && (
+                <Arrow
+                    x={sourceX}
+                    y={sourceY}
+                    points={points}
+                    fill='white'
+                    stroke='white'
+                    strokeWidth={8}
+                    pointerLength={10}
+                    pointerWidth={10}
+                />
+            )}
             {hasOutline && (
                 <Arrow
                     x={sourceX}
@@ -584,6 +605,7 @@ export function computeProcessedLinks(links: IInteractableLink[]): IProcessedLin
 interface ILinkArrowLayerProps {
     links: IInteractableLink[];
     interactables: Model.Interactable[];
+    selected?: Model.Interactable;
 }
 
 export function LinkArrowLayer(props: ILinkArrowLayerProps): JSX.Element {
@@ -628,6 +650,7 @@ export function LinkArrowLayer(props: ILinkArrowLayerProps): JSX.Element {
                     color={pl.color}
                     outlineColor={pl.outlineColor}
                     offset={pl.offset[0] !== 0 || pl.offset[1] !== 0 ? pl.offset : undefined}
+                    isHighlighted={props.selected !== undefined && (pl.link.source === props.selected || pl.link.target === props.selected)}
                 />
             ))}
         </Group>
@@ -645,7 +668,7 @@ export function loadAssets(onComplete: () => void): void
         'paint-black']
     for (const kind of assetKeys) {
         // This whole thing is bad and this element is also bad...
-        Konva.Image.fromURL('/ScrapMechanicLogicGateSimulator/' + kind + '.png', (img: string) => {
+        Konva.Image.fromURL('/scrapmechaniclogicgatesim/' + kind + '.png', (img: string) => {
             _assets[kind.replace('-black', '')] = img;
             if (Object.keys(_assets).length === assetKeys.length) {
                 onComplete();

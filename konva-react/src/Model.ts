@@ -16,6 +16,7 @@ export interface ISerializedInteractable {
     kind: LogicGateTypes | 'input' | 'timer';
     inputs: Array<number>;
     description?: string | undefined;
+    paintColor?: string | undefined;
 }
 
 export interface IEventArgsInteractable {
@@ -41,15 +42,30 @@ function deserializeInteractable(serialized: Record<string,unknown>, kind: Logic
     }
 
     const description = (hasOwnProperty(serialized, 'description') && typeof(serialized.description) === 'string') ? serialized.description : undefined;
+    const paintColor = (hasOwnProperty(serialized, 'paintColor') && typeof(serialized.paintColor) === 'string') ? serialized.paintColor : undefined;
 
     return {
         kind: kind,
         x: serialized.x,
         y: serialized.y,
         description: description,
+        paintColor: paintColor,
         inputs: []
     }
 }
+
+export const ScrapMechanicPaintColors = [
+    { name: 'Gray', hex: '#7F7F7F' },
+    { name: 'Yellow', hex: '#E2DB13' },
+    { name: 'Lime Green', hex: '#A0EA00' },
+    { name: 'Green', hex: '#19E753' },
+    { name: 'Cyan', hex: '#2CE6E6' },
+    { name: 'Blue', hex: '#0A3EE2' },
+    { name: 'Violet', hex: '#7514ED' },
+    { name: 'Magenta', hex: '#CF11D2' },
+    { name: 'Red', hex: '#D02525' },
+    { name: 'Orange', hex: '#DF7F00' },
+];
 
 export class Interactable {
     private _x: number;
@@ -57,6 +73,7 @@ export class Interactable {
     private readonly _events: EventEmitter;
     private _inputs: Array<Interactable>;
     private _description: string | undefined;
+    private _paintColor: string | undefined;
 
     private _prevState: boolean;
     private _currentState: boolean;
@@ -73,6 +90,7 @@ export class Interactable {
         this._x = props.x;
         this._y = props.y;
         this._description = props.description;
+        this._paintColor = props.paintColor;
 
         this.id = ++Interactable.idCounter;
     }
@@ -116,6 +134,12 @@ export class Interactable {
     public get description(): string | undefined { return this._description; }
     public set description(text: string | undefined) { this._description = text; }
 
+    public get paintColor(): string | undefined { return this._paintColor; }
+    public set paintColor(color: string | undefined) {
+        this._paintColor = color;
+        this._emitStateChanged();
+    }
+
     public get generatedDescription(): string | undefined { return undefined; }
 
     public setPosition(x: number, y: number): void {
@@ -147,6 +171,7 @@ export class Interactable {
             y: this._y,
             kind: 'input', // base classes will overwrite this.
             description: this._description,
+            paintColor: this._paintColor,
             inputs: []
         }
     }

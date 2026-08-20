@@ -302,12 +302,17 @@ interface IPaintButtonProps {
     x: number;
     y: number;
     selected: Model.Interactable | undefined;
+    onPaint?: () => void;
 }
 
 export function PaintButton(props: IPaintButtonProps): JSX.Element {
     function handleClick(): void {
         if (props.selected instanceof Model.InteractableWithSingleBitSavedState) {
-            props.selected.paint();
+            if (props.onPaint) {
+                props.onPaint();
+            } else {
+                props.selected.paint();
+            }
         }
         else {
             FloatingErrorMessage.show("Timers always save their current state on reload, so painting them has no effect on its behavior");

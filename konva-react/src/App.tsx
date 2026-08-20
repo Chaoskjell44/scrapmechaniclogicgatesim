@@ -172,7 +172,7 @@ export function App(props: AppProps): JSX.Element {
             } else if (e.key === 'L') {
                 props.simulator.takeOffLift();
             } else if (e.key === 'p' && selected) {
-                selected.paint();
+                showPaintColorPicker();
             }
     
             console.debug("App.handleKeyPress(" + e.key + ")");
@@ -185,6 +185,7 @@ export function App(props: AppProps): JSX.Element {
         }
         window.addEventListener('keypress', handleKeyPress);
         return () => window.removeEventListener('keypress', handleKeyPress);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.simulator, selected]);
     
     React.useEffect(() => {
@@ -328,6 +329,53 @@ export function App(props: AppProps): JSX.Element {
     toolTipEditor.onkeyup = (e) => { e.stopPropagation(); };
     toolTipEditor.onkeypress = (e) => { e.stopPropagation(); };
 
+    const paintColorPicker = document.getElementById('paintColorPicker')!;
+    const paintColorGrid = document.getElementById('paintColorGrid')!;
+
+    function showPaintColorPicker(): void {
+        if (!selected) return;
+        paintColorGrid.innerHTML = '';
+        for (const c of Model.ScrapMechanicPaintColors) {
+            const swatch = document.createElement('div');
+            swatch.style.width = '28px';
+            swatch.style.height = '28px';
+            swatch.style.backgroundColor = c.hex;
+            swatch.style.border = '2px solid #222';
+            swatch.style.cursor = 'pointer';
+            swatch.title = c.name;
+            swatch.onclick = () => {
+                selected!.paintColor = c.hex;
+                selected!.paint();
+                paintColorPicker.classList.remove('visible');
+            };
+            paintColorGrid.appendChild(swatch);
+        }
+        paintColorPicker.classList.add('visible');
+    }
+
+    function hidePaintColorPicker(): void {
+        paintColorPicker.classList.remove('visible');
+    }
+
+    function clearPaintColor(): void {
+        if (selected) {
+            selected.paintColor = undefined;
+        }
+        paintColorPicker.classList.remove('visible');
+    }
+
+    document.getElementById('paintColorCancel')!.onclick = hidePaintColorPicker;
+    document.getElementById('paintColorClear')!.onclick = clearPaintColor;
+
+    paintColorPicker.onkeydown = (e) => {
+        if (e.key === 'Escape') {
+            hidePaintColorPicker();
+        }
+        e.stopPropagation();
+    };
+    paintColorPicker.onkeyup = (e) => { e.stopPropagation(); };
+    paintColorPicker.onkeypress = (e) => { e.stopPropagation(); };
+
     let pointer: Array<JSX.Element> | JSX.Element = [];
 
     if (considerResizeOnNextRender) {
@@ -373,13 +421,14 @@ export function App(props: AppProps): JSX.Element {
                     onLinkStart={handleLinkStart}
                     onClick={handleInteractableClicked}
                     onMoveCompleted={handleMoveCompleted}
+                    onPaint={() => showPaintColorPicker()}
                 />
                 )}
                 {createByDragPrototype
                     ? <ViewModel.Interactable model={createByDragPrototype} key={createByDragPrototype.id.toString()} isSelected={false}/>
                     : []}
                 {pointer}
-                <ViewModel.LinkArrowLayer links={links} interactables={interactables} />
+                <ViewModel.LinkArrowLayer links={links} interactables={interactables} selected={selected} />
             </Layer>
             <Layer>
                 <Rect x={0} y={screenLayout.canvasHeight-screenLayout.buttonRowHeight} height={screenLayout.buttonRowHeight} width={screenLayout.canvasWidth} fill='papayawhip' />
@@ -393,7 +442,7 @@ export function App(props: AppProps): JSX.Element {
                 <LogicGateButton x={screenLayout.buttonRowX(6)} y={screenLayout.buttonRowY(6)} selected={selected} kind='input' onBeginDrag={handleNewInteractableDrag}/>
                 <LogicGateButton x={screenLayout.buttonRowX(7)} y={screenLayout.buttonRowY(7)} selected={selected} kind='timer' onBeginDrag={handleNewInteractableDrag}/>
                 <DeleteButton x={screenLayout.buttonRowX(8)} y={screenLayout.buttonRowY(8)} simulator={props.simulator} selected={selected}/>
-                <PaintButton x={screenLayout.buttonRowX(9)} y={screenLayout.buttonRowY(9)} selected={selected}/>
+                <PaintButton x={screenLayout.buttonRowX(9)} y={screenLayout.buttonRowY(9)} selected={selected} onPaint={showPaintColorPicker}/>
                 <StartStopButton x={screenLayout.buttonRowX(10)} y={screenLayout.buttonRowY(10)} model={props.simulator}/>
                 <SingleStepButton x={screenLayout.buttonRowX(11)} y={screenLayout.buttonRowY(11)} model={props.simulator}/>
                 <ReloadButton x={screenLayout.buttonRowX(12)} y={screenLayout.buttonRowY(12)} simulator={props.simulator}/>

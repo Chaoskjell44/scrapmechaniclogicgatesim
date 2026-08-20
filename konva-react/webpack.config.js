@@ -16,5 +16,5 @@ export const resolve = {
 export const output = {
   filename: 'bundle.js',
   path: _resolve(__dirname, 'dist'),
-  publicPath: '/ScrapMechanicLogicGateSimulator/',
+  publicPath: '/scrapmechaniclogicgatesim/',
 };
