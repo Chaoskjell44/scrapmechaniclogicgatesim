@@ -1,0 +1,186 @@
+[
+    {
+        "kind": "and",
+        "x": 68,
+        "y": 71,
+        "savedState": false,
+        "inputs": []
+    },
+    {
+        "kind": "nand",
+        "x": 190,
+        "y": 67,
+        "savedState": false,
+        "inputs": [
+            0
+        ]
+    },
+    {
+        "kind": "and",
+        "x": 295,
+        "y": 69,
+        "savedState": false,
+        "inputs": [
+            1
+        ]
+    },
+    {
+        "kind": "and",
+        "x": 407,
+        "y": 73,
+        "savedState": false,
+        "inputs": [
+            2
+        ]
+    },
+    {
+        "kind": "or",
+        "x": 205,
+        "y": 268,
+        "savedState": false,
+        "inputs": [
+            11,
+            5
+        ]
+    },
+    {
+        "kind": "nor",
+        "x": 203,
+        "y": 359,
+        "savedState": false,
+        "inputs": [
+            6,
+            13
+        ]
+    },
+    {
+        "kind": "nand",
+        "x": 299,
+        "y": 267,
+        "savedState": false,
+        "inputs": [
+            4
+        ]
+    },
+    {
+        "kind": "timer10",
+        "x": 86,
+        "y": 193,
+        "timerTickStorage": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "inputs": [
+            11
+        ]
+    },
+    {
+        "kind": "timer10",
+        "x": 116,
+        "y": 488,
+        "timerTickStorage": [
+            true,
+            true,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "inputs": [
+            9
+        ]
+    },
+    {
+        "kind": "timer10",
+        "x": 124,
+        "y": 598,
+        "timerTickStorage": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+        ],
+        "inputs": [
+            10
+        ]
+    },
+    {
+        "kind": "nor",
+        "x": 226,
+        "y": 484,
+        "savedState": false,
+        "inputs": [
+            8,
+            5
+        ]
+    },
+    {
+        "kind": "nand",
+        "x": 196,
+        "y": 173,
+        "savedState": false,
+        "inputs": [
+            3,
+            2,
+            1
+        ]
+    },
+    {
+        "kind": "timer10",
+        "x": 84,
+        "y": 303,
+        "timerTickStorage": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "inputs": [
+            7
+        ]
+    },
+    {
+        "kind": "timer10",
+        "x": 82,
+        "y": 400,
+        "timerTickStorage": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "inputs": [
+            12
+        ]
+    }
+]

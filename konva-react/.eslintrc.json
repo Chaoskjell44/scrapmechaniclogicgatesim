@@ -1,0 +1,36 @@
+{
+    "parser": "@typescript-eslint/parser", // Specifies the ESLint parser
+    "parserOptions": {
+      "ecmaVersion": 2020, // Allows for the parsing of modern ECMAScript features
+      "sourceType": "module", // Allows for the use of imports
+      "ecmaFeatures": {
+        "jsx": true // Allows for the parsing of JSX
+      }
+    },
+    "settings": {
+      "react": {
+        "version": "detect" // Tells eslint-plugin-react to automatically detect the version of React to use
+      }
+    },
+    "extends": [
+      // Commented this line out because of this error:
+      // [eslint] Plugin "react" was conflicted between ".eslintrc.json » plugin:react/recommended" and "BaseConfig » E:\repos\LogicGates\konva-react\node_modules\eslint-config-react-app\base.js".
+      // That's probably the wrong thing to do.  I suspect that there's been a change somewhere in the web of dependencies.
+      // Perhaps a way to fix this would be to create a new react app and see what the boilerplate .eslintrc file looks like.
+      //
+      // "plugin:react/recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:react-hooks/recommended"
+    ],
+    "rules": {
+      "eqeqeq": "error",
+      "no-extra-semi": "off",
+      "@typescript-eslint/no-extra-semi": ["off"],
+      "no-throw-literal": "error",
+      "@typescript-eslint/consistent-type-assertions": "error",
+      "@typescript-eslint/no-useless-constructor": "error",
+      "rest-spread-spacing": "error"
+          // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
+      // e.g. "@typescript-eslint/explicit-function-return-type": "off",
+    }
+}
