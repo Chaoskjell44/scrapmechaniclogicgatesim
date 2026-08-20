@@ -446,8 +446,8 @@ export function LinkArrow(props: ILinkArrowProps): JSX.Element {
                     x={sourceX}
                     y={sourceY}
                     points={points}
-                    fill='white'
-                    stroke='white'
+                    fill='#FF4500'
+                    stroke='#FF4500'
                     strokeWidth={8}
                     pointerLength={10}
                     pointerWidth={10}
