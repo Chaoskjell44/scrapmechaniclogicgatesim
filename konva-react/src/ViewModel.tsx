@@ -424,14 +424,14 @@ export function LinkArrow(props: ILinkArrowProps): JSX.Element {
     const targetY = baseTargetY + offY;
 
     const defaultColor = isLit ? 'darkblue' : 'teal';
-    const color = props.color ?? defaultColor;
-    const outlineColor = props.outlineColor ?? color;
-    const hasOutline = props.outlineColor !== undefined;
+    const color = props.color || defaultColor;
+    const outlineColor = props.outlineColor || color;
+    const hasOutline = props.outlineColor !== undefined && props.outlineColor !== '';
 
     const points = [0, 0, targetX - sourceX, targetY - sourceY];
 
     return (
-        <>
+        <Group>
             {hasOutline && (
                 <Arrow
                     x={sourceX}
@@ -454,11 +454,11 @@ export function LinkArrow(props: ILinkArrowProps): JSX.Element {
                 pointerLength={10}
                 pointerWidth={10}
             />
-        </>
+        </Group>
     );
 }
 
-const OVERLAP_SPACING = 6; // px between line centers
+const OVERLAP_SPACING = 6;
 const OVERLAP_COLORS = [
     '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231',
     '#911eb4', '#42d4f4', '#f032e6', '#a9a9a9', '#9A6324'
@@ -511,8 +511,8 @@ function getPerpendicularUnitVector(segment: [number, number, number, number]): 
 interface IProcessedLink {
     link: IInteractableLink;
     offset: [number, number];
-    color: string;
-    outlineColor: string;
+    color?: string;
+    outlineColor?: string;
 }
 
 export function computeProcessedLinks(links: IInteractableLink[]): IProcessedLink[] {
@@ -522,7 +522,6 @@ export function computeProcessedLinks(links: IInteractableLink[]): IProcessedLin
         getEndpointsOutsideOfBox(l.source.x + 32, l.source.y + 32, l.target.x + 32, l.target.y + 32) as [number, number, number, number]
     );
 
-    // Build adjacency list for overlapping segments
     const adj: number[][] = links.map(() => []);
     for (let i = 0; i < links.length; i++) {
         for (let j = i + 1; j < links.length; j++) {
@@ -533,7 +532,6 @@ export function computeProcessedLinks(links: IInteractableLink[]): IProcessedLin
         }
     }
 
-    // Find connected components of the overlap graph (only for connected nodes)
     const visited = new Array(links.length).fill(false);
     const components: number[][] = [];
 
@@ -559,9 +557,7 @@ export function computeProcessedLinks(links: IInteractableLink[]): IProcessedLin
 
     const result: IProcessedLink[] = links.map(link => ({
         link,
-        offset: [0, 0],
-        color: '',
-        outlineColor: ''
+        offset: [0, 0] as [number, number],
     }));
 
     for (const comp of components) {
@@ -623,18 +619,18 @@ export function LinkArrowLayer(props: ILinkArrowLayerProps): JSX.Element {
     const processedLinks = computeProcessedLinks(props.links);
 
     return (
-        <>
+        <Group>
             {processedLinks.map(pl => (
                 <LinkArrow
                     key={pl.link.source.id + "-" + pl.link.target.id}
                     source={pl.link.source}
                     target={pl.link.target}
-                    color={pl.color || undefined}
-                    outlineColor={pl.outlineColor || undefined}
+                    color={pl.color}
+                    outlineColor={pl.outlineColor}
                     offset={pl.offset[0] !== 0 || pl.offset[1] !== 0 ? pl.offset : undefined}
                 />
             ))}
-        </>
+        </Group>
     );
 }
 
